@@ -51,7 +51,7 @@ export async function searchProducts(query) {
   try {
     // We search across nome and descrizione
     const { data: products, error } = await supabase
-      .from("products")
+      .from("prodotti")
       .select("*, categorie(nome)")
       .or(`nome.ilike.%${lowerQuery}%,descrizione.ilike.%${lowerQuery}%`)
       .limit(5);
