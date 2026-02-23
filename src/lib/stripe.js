@@ -61,16 +61,21 @@ export async function processPayment(productId, quantity = 1) {
     }
 
     // 3. Redirect to Stripe Checkout
-    const { error: stripeError } = await stripe.redirectToCheckout({
-      sessionId: data.sessionId,
-    });
+    try {
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
 
-    if (stripeError) {
-      console.error("[Stripe] Redirect error:", stripeError);
-      throw stripeError;
+      if (stripeError) {
+        console.error("[Stripe] Redirect error:", stripeError);
+        throw stripeError;
+      }
+    } catch (redirectErr) {
+      console.error("[Stripe] Checkout API Error:", redirectErr);
+      throw new Error("Il gateway Stripe non risponde. Controlla la tua connessione e riprova.");
     }
   } catch (err) {
     console.error("Payment flow failed:", err);
-    alert("Connessione al gateway bancario interrotta. Riprovare.");
+    alert(err.message || "Connessione al gateway bancario interrotta. Riprovare.");
   }
 }

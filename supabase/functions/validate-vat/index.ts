@@ -12,6 +12,18 @@ import { corsHeaders } from '../_shared/cors.ts';
 
 const VIES_URL = 'https://ec.europa.eu/taxation_customs/vies/rest-api/check-vat-number';
 
+async function fetchWithTimeout(resource, options = {}) {
+  const { timeout = 8000 } = options;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  const response = await fetch(resource, {
+    ...options,
+    signal: controller.signal  
+  });
+  clearTimeout(id);
+  return response;
+}
+
 Deno.serve(async (req) => {
     // CORS preflight
     if (req.method === 'OPTIONS') {
@@ -42,9 +54,10 @@ Deno.serve(async (req) => {
         }
 
         // Chiamata API VIES
-        const viesResponse = await fetch(VIES_URL, {
+        const viesResponse = await fetchWithTimeout(VIES_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            timeout: 8000,
             body: JSON.stringify({
                 countryCode: cleanCountry,
                 vatNumber: cleanVat,
@@ -78,6 +91,12 @@ Deno.serve(async (req) => {
 
     } catch (error) {
         console.error('Errore validazione VAT:', error);
+        if (error.name === 'AbortError') {
+            return new Response(
+                JSON.stringify({ error: 'Timeout di rete: Il portale Europeo VIES non risponde. Riprova più tardi.' }),
+                { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
+        }
         return new Response(
             JSON.stringify({ error: 'Errore interno del server' }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

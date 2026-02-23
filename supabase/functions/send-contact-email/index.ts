@@ -19,6 +19,18 @@ const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 // L'admin email deve ricevere questi form (es. info@cristalmad.com)
 const ADMIN_EMAIL = Deno.env.get('ADMIN_EMAIL') || 'info@cristalmad.com';
 
+async function fetchWithTimeout(resource, options = {}) {
+  const { timeout = 8000 } = options;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  const response = await fetch(resource, {
+    ...options,
+    signal: controller.signal  
+  });
+  clearTimeout(id);
+  return response;
+}
+
 Deno.serve(async (req) => {
     // Gestione Preflight CORS
     if (req.method === 'OPTIONS') {
@@ -58,12 +70,13 @@ Deno.serve(async (req) => {
         `;
 
         // Invio request HTTP all'API Resend
-        const res = await fetch('https://api.resend.com/emails', {
+        const res = await fetchWithTimeout('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${RESEND_API_KEY}`,
             },
+            timeout: 8000,
             body: JSON.stringify({
                 from: 'Cristalmad Mailer <onboarding@resend.dev>', // L'email certificata o sandbox su Resend
                 to: [ADMIN_EMAIL],
@@ -89,6 +102,12 @@ Deno.serve(async (req) => {
 
     } catch (error) {
         console.error('[CONTACT FORM] Errore critico:', error);
+        if (error.name === 'AbortError') {
+            return new Response(
+                JSON.stringify({ error: 'Timeout di rete: Servizio di mailing non raggiungibile. Riprova più tardi.' }),
+                { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
+        }
         return new Response(
             JSON.stringify({ error: error.message || 'Errore interno del server durante invio email.' }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
