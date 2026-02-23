@@ -189,6 +189,9 @@ export function atelierView() {
             <!-- Maestro Alvise -->
             <div class="glass-panel" style="aspect-ratio: 3/5; overflow: hidden; position: relative; border-radius: 8px;">
                <img src="https://images.unsplash.com/photo-1510423725597-1514cd2245b6?q=80&w=400&auto=format&fit=crop" 
+                    srcset="https://images.unsplash.com/photo-1510423725597-1514cd2245b6?q=80&w=400&auto=format&fit=crop 1x, https://images.unsplash.com/photo-1510423725597-1514cd2245b6?q=80&w=800&auto=format&fit=crop 2x"
+                    loading="lazy"
+                    decoding="async"
                     alt="Maestro Alvise" 
                     style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(80%) sepia(30%) contrast(1.1); transition: filter 0.5s ease;"
                     onmouseover="this.style.filter='grayscale(0%) sepia(10%) contrast(1.1)'"
@@ -203,6 +206,9 @@ export function atelierView() {
             <!-- Maestro Lorenzo (Offset) -->
             <div class="glass-panel" style="aspect-ratio: 3/5; overflow: hidden; position: relative; border-radius: 8px; transform: translateY(-30px);">
                <img src="https://images.unsplash.com/photo-1542178229-ea21c7d2cdd2?q=80&w=400&auto=format&fit=crop" 
+                    srcset="https://images.unsplash.com/photo-1542178229-ea21c7d2cdd2?q=80&w=400&auto=format&fit=crop 1x, https://images.unsplash.com/photo-1542178229-ea21c7d2cdd2?q=80&w=800&auto=format&fit=crop 2x"
+                    loading="lazy"
+                    decoding="async"
                     alt="Maestro Lorenzo" 
                     style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(80%) sepia(30%) contrast(1.1); transition: filter 0.5s ease;"
                     onmouseover="this.style.filter='grayscale(0%) sepia(10%) contrast(1.1)'"
@@ -217,6 +223,9 @@ export function atelierView() {
             <!-- Maestro Giacomo -->
             <div class="glass-panel" style="aspect-ratio: 3/5; overflow: hidden; position: relative; border-radius: 8px; transform: translateY(15px);">
                <img src="https://images.unsplash.com/photo-1629853383570-3d3cc9cc9bb5?q=80&w=400&auto=format&fit=crop" 
+                    srcset="https://images.unsplash.com/photo-1629853383570-3d3cc9cc9bb5?q=80&w=400&auto=format&fit=crop 1x, https://images.unsplash.com/photo-1629853383570-3d3cc9cc9bb5?q=80&w=800&auto=format&fit=crop 2x"
+                    loading="lazy"
+                    decoding="async"
                     alt="Maestro Giacomo" 
                     style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(80%) sepia(30%) contrast(1.1); transition: filter 0.5s ease;"
                     onmouseover="this.style.filter='grayscale(0%) sepia(10%) contrast(1.1)'"

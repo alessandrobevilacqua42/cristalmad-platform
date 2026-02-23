@@ -488,34 +488,26 @@ ul {
 .hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(8, 8, 13, 0.6) 0%,
-    rgba(8, 8, 13, 0.3) 40%,
-    rgba(8, 8, 13, 0.5) 70%,
-    rgba(8, 8, 13, 0.95) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(8, 8, 13, 0.6) 0%,
+      rgba(8, 8, 13, 0.3) 40%,
+      rgba(8, 8, 13, 0.5) 70%,
+      rgba(8, 8, 13, 0.95) 100%);
 }
 
 .hero__caustics {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(
-      ellipse at 20% 50%,
+    radial-gradient(ellipse at 20% 50%,
       rgba(168, 197, 226, 0.04) 0%,
-      transparent 60%
-    ),
-    radial-gradient(
-      ellipse at 80% 30%,
+      transparent 60%),
+    radial-gradient(ellipse at 80% 30%,
       rgba(201, 168, 76, 0.025) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 50% 80%,
+      transparent 50%),
+    radial-gradient(ellipse at 50% 80%,
       rgba(168, 197, 226, 0.02) 0%,
-      transparent 40%
-    );
+      transparent 40%);
   animation: caustics-drift 20s ease-in-out infinite alternate;
   pointer-events: none;
 }
@@ -566,12 +558,10 @@ ul {
 
 .hero__title-accent {
   display: block;
-  background: linear-gradient(
-    135deg,
-    var(--c-gold-light),
-    var(--c-gold),
-    var(--c-crystal-blue)
-  );
+  background: linear-gradient(135deg,
+      var(--c-gold-light),
+      var(--c-gold),
+      var(--c-crystal-blue));
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -580,6 +570,7 @@ ul {
 }
 
 @keyframes shimmer-text {
+
   0%,
   100% {
     background-position: 0% center;
@@ -721,12 +712,10 @@ ul {
   left: 0;
   right: 0;
   padding: var(--s-lg);
-  background: linear-gradient(
-    to top,
-    rgba(8, 8, 13, 0.95),
-    rgba(8, 8, 13, 0.6) 60%,
-    transparent
-  );
+  background: linear-gradient(to top,
+      rgba(8, 8, 13, 0.95),
+      rgba(8, 8, 13, 0.6) 60%,
+      transparent);
   z-index: 2;
 }
 
@@ -810,14 +799,12 @@ ul {
 .product-card__shimmer {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(255, 255, 255, 0.06) 45%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.06) 55%,
-    transparent 60%
-  );
+  background: linear-gradient(105deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.06) 45%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.06) 55%,
+      transparent 60%);
   background-size: 300% 100%;
   opacity: 0;
   transition: opacity var(--t-fast);
@@ -962,12 +949,10 @@ ul {
 .craftsmanship__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(8, 8, 13, 0.95) 0%,
-    rgba(8, 8, 13, 0.85) 40%,
-    rgba(8, 8, 13, 0.5) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(8, 8, 13, 0.95) 0%,
+      rgba(8, 8, 13, 0.85) 40%,
+      rgba(8, 8, 13, 0.5) 100%);
   z-index: 1;
 }
 
@@ -1906,6 +1891,7 @@ ul {
 }
 
 @keyframes hint-bounce {
+
   0%,
   100% {
     transform: translateX(-3px);
@@ -2047,11 +2033,9 @@ ul {
 .configurator__preview-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at 50% 80%,
-    rgba(201, 168, 76, 0.08),
-    transparent 60%
-  );
+  background: radial-gradient(circle at 50% 80%,
+      rgba(201, 168, 76, 0.08),
+      transparent 60%);
   pointer-events: none;
 }
 
@@ -2253,11 +2237,9 @@ ul {
   gap: var(--s-md);
   margin-top: var(--s-lg);
   padding: var(--s-md) var(--s-lg);
-  background: linear-gradient(
-    135deg,
-    rgba(201, 168, 76, 0.1),
-    rgba(201, 168, 76, 0.05)
-  );
+  background: linear-gradient(135deg,
+      rgba(201, 168, 76, 0.1),
+      rgba(201, 168, 76, 0.05));
   border: 1px solid rgba(201, 168, 76, 0.25);
   border-radius: 6px;
 }
@@ -2269,6 +2251,7 @@ ul {
 }
 
 @keyframes urgency-pulse {
+
   0%,
   100% {
     opacity: 0.6;
@@ -2802,5 +2785,140 @@ ul {
 
   .product-detail__specs {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LEGAL PAGES (TERMINI & SPEDIZIONI)
+   ═══════════════════════════════════════════════════════════════ */
+.legal-page__container {
+  max-width: 800px;
+  padding: var(--s-5xl) var(--s-md);
+  margin: 0 auto;
+}
+
+.legal-page__title {
+  margin-bottom: var(--s-2xl);
+}
+
+.legal-page__content {
+  padding: var(--s-2xl);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--c-text-secondary);
+}
+
+.legal-page__intro {
+  margin-bottom: var(--s-lg);
+  color: var(--c-gold-light);
+  font-style: italic;
+}
+
+.legal-page__heading {
+  font-family: var(--f-heading);
+  color: var(--c-text-primary);
+  margin-bottom: var(--s-md);
+  font-size: 1.5rem;
+  margin-top: var(--s-xl);
+}
+
+.legal-page__heading:first-of-type {
+  margin-top: 0;
+}
+
+.legal-page__paragraph {
+  margin-bottom: var(--s-lg);
+}
+
+.legal-page__strong {
+  color: var(--c-gold);
+  display: block;
+  margin-top: var(--s-xs);
+}
+
+.legal-page__highlight {
+  color: var(--c-text-primary);
+}
+
+.legal-page__icon-intro {
+  text-align: center;
+  margin-bottom: var(--s-xl);
+}
+
+.legal-page__large-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: var(--s-sm);
+}
+
+.legal-page__intro-text {
+  color: var(--c-gold-light);
+  font-style: italic;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.legal-page__heading--alert {
+  color: #ff6b6b;
+}
+
+.legal-page__alert-box {
+  padding: var(--s-md);
+  background: rgba(255, 107, 107, 0.05);
+  border-left: 3px solid #ff6b6b;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: var(--s-lg);
+}
+
+.legal-page__alert-text {
+  margin-bottom: var(--s-xs);
+  color: var(--c-text-primary);
+}
+
+.legal-page__alert-list {
+  list-style: disc;
+  margin-left: var(--s-xl);
+  margin-top: var(--s-sm);
+  color: var(--c-text-primary);
+}
+
+.legal-page__alert-list li {
+  margin-bottom: var(--s-xs);
+}
+
+.legal-page__highlight--gold {
+  color: var(--c-gold-light);
+}
+
+.legal-page__link {
+  color: var(--c-gold);
+  text-decoration: underline;
+  transition: color var(--t-fast);
+}
+
+.legal-page__link:hover {
+  color: var(--c-gold-light);
+}
+
+/* Responsive adjustments for legal pages */
+@media (max-width: 768px) {
+  .legal-page__container {
+    padding: var(--s-4xl) var(--s-md);
+  }
+
+  .legal-page__content {
+    padding: var(--s-lg);
+  }
+
+  .legal-page__heading {
+    font-size: 1.3rem;
+  }
+
+  .legal-page__alert-box {
+    padding: var(--s-sm);
+  }
+
+  .legal-page__alert-list {
+    margin-left: var(--s-lg);
   }
 }
