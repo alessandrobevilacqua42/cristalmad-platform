@@ -171,25 +171,45 @@ async function renderRoute() {
 
   const { route, params } = match;
 
-  // Update UI immediately
+  // 1. Fade out current content
+  appContainer.classList.add("page-transition");
+  appContainer.classList.remove("page-transition-active");
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
+  // 2. Update UI with Skeleton
   document.title = route.title;
   updateActiveNav(path);
   appContainer.innerHTML = LOADING_SKELETON;
   window.scrollTo({ top: 0, behavior: "instant" });
 
+  // Fade in skeleton
+  appContainer.classList.add("page-transition-active");
+
   try {
-    // Call view with params if dynamic route
+    // 3. Fetch view
     const hasParams = Object.keys(params).length > 0;
     const html = hasParams
       ? await route.view(params.slug || Object.values(params)[0])
       : await route.view();
+
+    // 4. Fade out skeleton slightly
+    appContainer.classList.remove("page-transition-active");
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // 5. Inject actual HTML and fade in
     appContainer.innerHTML = html;
+
+    // Yield to the browser to paint before fading in
+    requestAnimationFrame(() => {
+      appContainer.classList.add("page-transition-active");
+    });
   } catch (err) {
     console.error("[Router] View render error:", err);
     appContainer.innerHTML = `
       <div style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding-top: var(--nav-h);">
         <p style="color: var(--c-text-muted);">Errore nel caricamento della pagina.</p>
       </div>`;
+    requestAnimationFrame(() => appContainer.classList.add("page-transition-active"));
   }
 
   // Run hooks

@@ -5,10 +5,11 @@
 /* ─── CSS CUSTOM PROPERTIES ─── */
 :root {
   /* Colors — Luxury Palette */
-  --c-bg-deep: #08080d;
-  --c-bg-dark: #0e0e18;
-  --c-bg-mid: #1a1a2e;
-  --c-bg-card: #14142a;
+  --bg-dark: #050505;
+  --c-bg-deep: var(--bg-dark);
+  --c-bg-dark: var(--bg-dark);
+  --c-bg-mid: var(--bg-dark);
+  --c-bg-card: var(--bg-dark);
   --c-surface: rgba(255, 255, 255, 0.03);
   --c-glass: rgba(255, 255, 255, 0.06);
   --c-glass-border: rgba(255, 255, 255, 0.1);
@@ -105,11 +106,11 @@ ul {
 .section-eyebrow {
   font-family: var(--f-body);
   font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.25em;
+  font-weight: 300;
+  letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--c-gold);
-  margin-bottom: var(--s-md);
+  margin-bottom: var(--s-lg);
 }
 
 .section-eyebrow--light {
@@ -121,6 +122,7 @@ ul {
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 300;
   line-height: 1.15;
+  letter-spacing: 0.02em;
   color: var(--c-text-primary);
   margin-bottom: var(--s-xl);
 }
@@ -131,7 +133,7 @@ ul {
 
 .section-header {
   text-align: center;
-  margin-bottom: var(--s-4xl);
+  margin-bottom: var(--s-5xl);
 }
 
 /* ─── BUTTONS ─── */
@@ -2988,6 +2990,57 @@ ul {
   background: radial-gradient(circle at center, transparent 40%, rgba(20, 20, 20, 0.8) 100%);
   pointer-events: none;
   z-index: 1;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   LUXURY SYSTEM INTEGRATION (PAGE TRANSITIONS & TOAST)
+   ════════════════════════════════════════════════════════════════ */
+
+/* Page Transitions */
+.page-transition {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.page-transition-active {
+  opacity: 1;
+}
+
+/* Toast Notifications */
+.toast-ui {
+  position: fixed;
+  bottom: var(--s-xl);
+  right: var(--s-xl);
+  background: var(--bg-dark);
+  border: 1px solid var(--c-glass-border);
+  color: var(--c-text-primary);
+  padding: var(--s-md) var(--s-xl);
+  border-radius: 4px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  font-family: var(--f-body);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: var(--s-md);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+.toast-ui.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .toast-ui {
+    bottom: var(--s-md);
+    right: var(--s-md);
+    left: var(--s-md);
+    justify-content: center;
+    text-align: center;
+  }
 }
 
 .legal-page__highlight--gold {

@@ -1,5 +1,6 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { supabase } from "./supabase.js";
+import { showToast } from "./ui.js";
 
 let stripePromise;
 
@@ -76,6 +77,6 @@ export async function processPayment(productId, quantity = 1) {
     }
   } catch (err) {
     console.error("Payment flow failed:", err);
-    alert(err.message || "Connessione al gateway bancario interrotta. Riprovare.");
+    showToast(err.message || "Connessione al gateway bancario interrotta. Riprovare.", true);
   }
 }
