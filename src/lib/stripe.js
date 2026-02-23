@@ -1,114 +1,76 @@
-/**
- * Cristalmad — Stripe Client
- * 
- * Client per l'interazione con Stripe lato frontend.
- * Carica Stripe.js in modo lazy (solo quando serve).
- * 
- * NOTA: La chiave segreta (sk_*) NON viene MAI usata qui.
- * Le operazioni sensibili (creazione checkout, webhook) avvengono
- * esclusivamente nelle Edge Functions di Supabase.
- */
+import { loadStripe } from "@stripe/stripe-js";
+import { supabase } from "./supabase.js";
 
-import { loadStripe } from '@stripe/stripe-js';
+let stripePromise;
 
-// --- Variabili d'ambiente ---
-const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-
-// Validazione
-if (!stripePublishableKey) {
-    console.warn(
-        '[Cristalmad] VITE_STRIPE_PUBLISHABLE_KEY non configurata. ' +
-        'I pagamenti Stripe non funzioneranno finché non viene impostata nel file .env'
-    );
-}
-
-/**
- * Istanza Stripe (lazy-loaded).
- * loadStripe() carica lo script Stripe.js solo al primo utilizzo.
- */
-let stripePromise = null;
-
-/**
- * Restituisce l'istanza Stripe.
- * Utilizza il pattern singleton per evitare caricamenti multipli.
- * @returns {Promise<import('@stripe/stripe-js').Stripe | null>}
- */
-export function getStripe() {
-    if (!stripePromise && stripePublishableKey) {
-        stripePromise = loadStripe(stripePublishableKey);
+// Initialize Stripe lazy loading
+const getStripe = () => {
+  if (!stripePromise) {
+    const key = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+    if (!key) {
+      console.error("[Stripe] Missing VITE_STRIPE_PUBLISHABLE_KEY in .env");
+      return null;
     }
-    return stripePromise;
-}
+    stripePromise = loadStripe(key);
+  }
+  return stripePromise;
+};
 
 /**
- * Redirige l'utente alla pagina di checkout Stripe.
- * 
- * @param {string} checkoutSessionId - ID della sessione di checkout
- *   creata dalla Edge Function /create-checkout
- * @returns {Promise<{error?: import('@stripe/stripe-js').StripeError}>}
+ * Invokes the Supabase Edge Function to create a Stripe Checkout Session,
+ * and then redirects the user to the Stripe hosted checkout page.
+ *
+ * @param {string} productId - The ID of the product
+ * @param {number} quantity - Quantity desired
+ * @returns {Promise<void>}
  */
-export async function redirectToCheckout(checkoutSessionId) {
+export async function processPayment(productId, quantity = 1) {
+  try {
     const stripe = await getStripe();
+    if (!stripe) throw new Error("Stripe failed to initialize.");
 
-    if (!stripe) {
-        throw new Error(
-            '[Cristalmad] Stripe non inizializzato. Verifica VITE_STRIPE_PUBLISHABLE_KEY nel .env'
-        );
-    }
+    // 1. Get the current user session (if any, to pass it to the function for B2B pricing logic)
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-    const result = await stripe.redirectToCheckout({
-        sessionId: checkoutSessionId,
+    // 2. Call the Supabase Edge Function
+    // Fallback: If edge functions are not deployed, we gracefully fail on the client.
+    const { data, error } = await supabase.functions.invoke("create-checkout", {
+      body: {
+        items: [
+          {
+            product_id: productId,
+            quantity: quantity,
+          },
+        ],
+      },
     });
 
-    if (result.error) {
-        console.error('[Cristalmad] Errore redirect checkout:', result.error.message);
+    if (error) {
+      console.error("[Stripe] Edge function error:", error);
+      throw new Error(
+        "Errore durante la creazione della sessione di pagamento.",
+      );
     }
 
-    return result;
-}
-
-/**
- * Crea una sessione di checkout chiamando la Edge Function di Supabase.
- * 
- * @param {Object} params
- * @param {Array<{productId: string, quantity: number}>} params.items - Prodotti da acquistare
- * @param {string} params.accessToken - JWT token dell'utente autenticato
- * @param {string} [params.successUrl] - URL di redirect dopo pagamento riuscito
- * @param {string} [params.cancelUrl] - URL di redirect se l'utente annulla
- * @returns {Promise<{sessionId: string, url: string}>}
- */
-export async function createCheckoutSession({
-    items,
-    accessToken,
-    successUrl = `${window.location.origin}/ordine-confermato`,
-    cancelUrl = `${window.location.origin}/carrello`,
-}) {
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-
-    const response = await fetch(
-        `${supabaseUrl}/functions/v1/create-checkout`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`,
-            },
-            body: JSON.stringify({
-                items,
-                success_url: successUrl,
-                cancel_url: cancelUrl,
-            }),
-        }
-    );
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-            errorData.error || `Errore creazione checkout: ${response.status}`
-        );
+    if (!data || !data.sessionId) {
+      throw new Error(
+        "La funzione non ha restituito un ID di sessione valido.",
+      );
     }
 
-    return response.json();
-}
+    // 3. Redirect to Stripe Checkout
+    const { error: stripeError } = await stripe.redirectToCheckout({
+      sessionId: data.sessionId,
+    });
 
-export default getStripe;
+    if (stripeError) {
+      console.error("[Stripe] Redirect error:", stripeError);
+      throw stripeError;
+    }
+  } catch (err) {
+    console.error("Payment flow failed:", err);
+    alert("Connessione al gateway bancario interrotta. Riprovare.");
+  }
+}

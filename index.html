@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cristalmad — Cristalleria Artigianale Italiana | Italian Design</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="description"
+    content="Cristalmad: cristalleria artigianale italiana soffiata a mano. Calici, coppe, bicchieri, caraffe e vasi in cristallo pregiato. B2B e B2C." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css' rel='stylesheet' />
+  <!-- Google Model Viewer for 3D/AR Spatial Commerce -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body>
+
+  <!-- ═══════════ NAVIGATION ═══════════ -->
+  <nav class="nav" id="main-nav">
+    <div class="nav__inner">
+      <a href="#/" class="nav__logo" data-link>
+        <span class="nav__logo-text">CRISTALMAD</span>
+        <span class="nav__logo-sub">italian design</span>
+        <span class="nav__logo-flag">
+          <span class="flag-green"></span>
+          <span class="flag-white"></span>
+          <span class="flag-red"></span>
+        </span>
+      </a>
+      <button class="nav__hamburger" id="hamburger-btn" aria-label="Apri menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="#/" data-link>Home</a></li>
+        <li><a href="#/catalogo" data-link>Catalogo</a></li>
+        <li><a href="#/chi-siamo" data-link>Chi Siamo</a></li>
+        <li><a href="#/atelier" data-link>Atelier</a></li>
+        <li><a href="#/contatti" data-link>Contatti</a></li>
+        <li class="nav__search">
+          <input type="search" class="nav__search-input" id="global-search" placeholder="Cerca un prodotto..."
+            autocomplete="off">
+          <div class="nav__search-dropdown" id="search-results-dropdown" style="display: none;"></div>
+        </li>
+        <li><a href="#/login" class="nav__cta" data-link>Area Riservata</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══════════ APP CONTAINER ═══════════ -->
+  <main id="app"></main>
+
+  <!-- ═══════════ PRODUCT MODAL ═══════════ -->
+  <div class="modal" id="product-modal">
+    <div class="modal__backdrop" id="modal-backdrop"></div>
+    <div class="modal__content glass-panel">
+      <button class="modal__close" id="modal-close">&times;</button>
+      <div class="modal__body">
+        <div class="modal__image">
+          <img src="" alt="" id="modal-img" />
+        </div>
+        <div class="modal__info">
+          <span class="product-card__category" id="modal-category"></span>
+          <h2 id="modal-name"></h2>
+          <p id="modal-desc"></p>
+          <div class="modal__details">
+            <div class="modal__detail">
+              <strong>Materiale</strong>
+              <span>Cristallo soffiato a mano</span>
+            </div>
+            <div class="modal__detail">
+              <strong>Confezione</strong>
+              <span id="modal-pack">6 pezzi</span>
+            </div>
+            <div class="modal__detail">
+              <strong>Disponibilità</strong>
+              <span>Su ordinazione</span>
+            </div>
+          </div>
+          <div class="modal__price-row" id="modal-price-row"
+            style="display:none; align-items: center; gap: var(--s-md);">
+            <div>
+              <span class="product-card__price" id="modal-price"></span>
+              <span class="product-card__price-unit" id="modal-price-unit"></span>
+            </div>
+            <button class="btn btn--primary btn--sm" id="modal-buy-btn">Acquista Ora</button>
+          </div>
+          <a href="#/login" class="btn btn--primary" id="modal-cta" data-link>Accedi per i Prezzi</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ COOKIE CONSENT ═══════════ -->
+  <div class="cookie-banner" id="cookie-banner" style="display: none;">
+    <div class="cookie-banner__inner">
+      <p>Utilizziamo i cookie per migliorare la tua esperienza. Continuando a navigare, accetti la nostra <a
+          href="#/privacy" data-link>Cookie Policy</a>.</p>
+      <div class="cookie-banner__actions">
+        <button class="btn btn--primary btn--sm" id="cookie-accept">Accetto</button>
+        <button class="btn btn--glass btn--sm" id="cookie-reject">Rifiuta</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
