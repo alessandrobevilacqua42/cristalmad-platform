@@ -230,6 +230,33 @@ export async function homeView() {
     </div>
   </section>
 
+  <!-- ═══════════ DARK LUXURY MANIFESTO ═══════════ -->
+  <section class="manifesto" id="manifesto">
+    <div class="container">
+      <div class="manifesto__grid">
+        <div class="manifesto__text animate-on-scroll">
+          <p class="section-eyebrow">Il Nostro Manifesto</p>
+          <h2 class="manifesto__title">
+            Materia Cruda,<br />
+            <span class="manifesto__title-accent">Pura Luce.</span>
+          </h2>
+          <p class="manifesto__desc">
+            Nel buio della nostra fornace, a 1400°C di calore, la fragilità incontra la massima resistenza. 
+            Non produciamo bicchieri industriali. Diamo forma a visioni liquide.
+          </p>
+          <p class="manifesto__desc">
+            Ogni singola goccia di cristallo incandescente è domata a mano dai nostri maestri. 
+            Nessun calice è identico all'altro. Questa non è imperfezione, è il sigillo autentico 
+            dell'alta manifattura italiana.
+          </p>
+        </div>
+        <div class="manifesto__visual animate-on-scroll" data-delay="150">
+          <img src="https://images.unsplash.com/photo-1542289196-ad4b98c36f01?q=80&w=1200&auto=format&fit=crop" alt="Fornace e cristallo fuso" class="manifesto__img" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════ CATEGORIES ═══════════ -->
   <section class="categories" id="collezioni">
     <div class="container">
