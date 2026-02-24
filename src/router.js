@@ -81,7 +81,10 @@ export function setAfterRenderHook(callback) {
  * Parse the current hash into a route path.
  */
 function getRoutePath() {
-  return window.location.hash.slice(1) || "/";
+  const hash = window.location.hash.slice(1) || "/";
+  // Remove any OAuth search/fragment parts (e.g. #/login#access_token=...)
+  // Supabase often appends parameters after the hash.
+  return hash.split("#")[0].split("?")[0];
 }
 
 /**

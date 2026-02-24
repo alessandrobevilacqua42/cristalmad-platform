@@ -7,6 +7,14 @@ import { initRouter, setAfterRenderHook } from "./router.js";
 import { processPayment } from "./lib/stripe.js";
 import { searchProducts } from "./lib/algolia.js";
 
+// Animation & Interaction Engines
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { initPremiumCursor } from "./lib/premium-cursor.js";
+
+// Register GSAP Plugins
+gsap.registerPlugin(ScrollTrigger);
+
 // ─── Dynamic product registry for modal (populated by views) ───
 // Maps product id/slug → product data
 const productRegistry = new Map();
@@ -33,72 +41,77 @@ export function registerProducts(products) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 1. SCROLL ANIMATIONS (IntersectionObserver)
+// 1. CINEMATIC SCROLL ANIMATIONS (GSAP + ScrollTrigger)
 // ═══════════════════════════════════════════════════════════════
 function initScrollAnimations() {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const delay = parseInt(entry.target.dataset.delay || "0", 10);
-          setTimeout(() => {
-            entry.target.classList.add("visible");
-          }, delay);
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
-  );
-
+  // Reveal elements with a sliding/fade effect
   document.querySelectorAll(".animate-on-scroll").forEach((el) => {
-    observer.observe(el);
+    const delay = parseFloat(el.dataset.delay || "0") / 1000;
+
+    gsap.fromTo(el,
+      {
+        opacity: 0,
+        y: 40,
+        scale: 0.98
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.2,
+        delay: delay,
+        ease: "expo.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          toggleActions: "play none none none"
+        }
+      }
+    );
   });
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 2. UNIFIED SCROLL EFFECTS (Nav + Parallax)
-// ═══════════════════════════════════════════════════════════════
+
+
 function initScrollEffects() {
   const nav = document.getElementById("main-nav");
-  let ticking = false;
 
-  window.addEventListener("scroll", () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        const windowH = window.innerHeight;
-
-        // Nav scroll
-        if (nav) {
-          if (scrollY > 80) nav.classList.add("nav--scrolled");
-          else nav.classList.remove("nav--scrolled");
-        }
-
-        // Hero parallax
-        const heroImg = document.querySelector(".hero__img");
-        if (heroImg && scrollY < windowH) {
-          heroImg.style.transform = `scale(1.1) translateY(${scrollY * 0.4}px)`;
-        }
-
-        // Craftsmanship parallax
-        const craftsmanshipParallax = document.getElementById(
-          "craftsmanship-parallax",
-        );
-        if (craftsmanshipParallax) {
-          const section = craftsmanshipParallax.closest(".craftsmanship");
-          if (section) {
-            const rect = section.getBoundingClientRect();
-            if (rect.top < windowH && rect.bottom > 0) {
-              const progress = (windowH - rect.top) / (windowH + rect.height);
-              craftsmanshipParallax.style.transform = `translateY(${(progress - 0.5) * 80}px)`;
-            }
-          }
-        }
-        ticking = false;
-      });
-      ticking = true;
+  // Sticky Nav Logic with GSAP for smoothness
+  ScrollTrigger.create({
+    start: "top -80",
+    onUpdate: (self) => {
+      if (nav) {
+        if (self.scroll() > 80) nav.classList.add("nav--scrolled");
+        else nav.classList.remove("nav--scrolled");
+      }
     }
+  });
+
+  // GSAP Parallax - Much smoother than manual requestAnimationFrame
+  gsap.utils.toArray(".hero__img").forEach(img => {
+    gsap.to(img, {
+      y: "25%",
+      ease: "none",
+      scrollTrigger: {
+        trigger: img,
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+  });
+
+  gsap.utils.toArray(".craftsmanship-parallax").forEach(img => {
+    gsap.to(img, {
+      y: -60,
+      ease: "none",
+      scrollTrigger: {
+        trigger: img,
+        scrub: true,
+        start: "top bottom",
+        end: "bottom top"
+      }
+    });
   });
 }
 
@@ -107,6 +120,11 @@ function initScrollEffects() {
 // ═══════════════════════════════════════════════════════════════
 function initCursorGlow() {
   document.addEventListener("mousemove", (e) => {
+    // 1. Global Glow Tracking
+    document.documentElement.style.setProperty("--glow-x", `${e.clientX}px`);
+    document.documentElement.style.setProperty("--glow-y", `${e.clientY}px`);
+
+    // 2. Product Card Glow (Legacy)
     const card = e.target.closest(".product-card");
     if (!card) return;
     const glow = card.querySelector(".product-card__glow");
@@ -135,6 +153,37 @@ function initCursorGlow() {
     },
     true,
   );
+}
+
+/**
+ * Magnetic button effect — premium interaction logic
+ */
+function initMagneticButtons() {
+  document.addEventListener("mousemove", (e) => {
+    const btn = e.target.closest(".btn, .nav__links a, .nav__logo");
+    if (!btn) {
+      document.querySelectorAll(".btn-magnetic-active").forEach(el => {
+        el.style.transform = "";
+        el.classList.remove("btn-magnetic-active");
+      });
+      return;
+    }
+
+    const rect = btn.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Calculate distance from center
+    const distanceX = e.clientX - centerX;
+    const distanceY = e.clientY - centerY;
+
+    // Apply magnetic pull (capped at 15px)
+    const pullX = Math.max(-15, Math.min(15, distanceX * 0.3));
+    const pullY = Math.max(-15, Math.min(15, distanceY * 0.3));
+
+    btn.classList.add("btn-magnetic-active");
+    btn.style.transform = `translate(${pullX}px, ${pullY}px)`;
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -442,11 +491,16 @@ function initCookieBanner() {
   });
 }
 
+
+
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
-  // Global effects (run once, use event delegation)
+  // Global interaction engines
+  initPremiumCursor();
+
+  // Effects
   initScrollEffects();
   initCursorGlow();
   initMobileMenu();
@@ -454,8 +508,11 @@ document.addEventListener("DOMContentLoaded", () => {
   initModal();
   initForm();
   initCardTilt();
+
   initCookieBanner();
   initSearch();
+  initMagneticButtons();
+
 
   // Set the after-render hook for the router
   setAfterRenderHook(initViewEffects);

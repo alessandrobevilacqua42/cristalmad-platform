@@ -54,6 +54,56 @@
   --blur-sm: 8px;
   --blur-md: 20px;
   --blur-lg: 40px;
+
+  /* Global Glow Pos */
+  --glow-x: 0px;
+  --glow-y: 0px;
+}
+
+/* ─── PREMIUM SILICON VALLEY CURSOR ─── */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--c-gold);
+}
+
+.cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--c-gold);
+}
+
+/* Luxury Difference Effect: the cursor reacts to the content below */
+@media (hover: hover) and (pointer: fine) {
+
+  .cursor-dot,
+  .cursor-ring {
+    opacity: 1;
+  }
+}
+
+.cursor--hover .cursor-ring {
+  width: 56px;
+  height: 56px;
+  background: rgba(201, 168, 76, 0.1);
+  border-color: var(--c-gold-light);
+}
+
+.cursor--hover .cursor-dot {
+  transform: translate(-50%, -50%) scale(0.5);
 }
 
 /* ─── RESET & BASE ─── */
@@ -1306,6 +1356,34 @@ ul {
 .animate-on-scroll.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ═══════════ PAGE TRANSITIONS ═══════════ */
+.page-transition {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.page-transition-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Luxury Grain Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: overlay;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -3121,4 +3199,30 @@ ul {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+/* Premium Interaction System */
+.btn-magnetic {
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.btn:hover {
+  letter-spacing: 0.25em !important;
+  box-shadow: 0 0 20px var(--c-gold-glow);
+}
+
+.nav__links a:hover {
+  color: var(--c-gold) !important;
+  transform: translateY(-2px);
+}
+
+.btn-magnetic-active {
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  body::before {
+    display: none;
+    /* Disable global glow on mobile for performance */
+  }
 }
