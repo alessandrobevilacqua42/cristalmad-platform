@@ -16,6 +16,7 @@ import { terminiView } from "./views/termini.js";
 import { faqView } from "./views/faq.js";
 import { spedizioniView } from "./views/spedizioni.js";
 import { conciergeView, initConcierge } from "./views/concierge.js";
+import { outletView } from "./views/outlet.js";
 import { updateNavAuth } from "./lib/auth.js";
 
 // ─── Route definitions ───
@@ -31,6 +32,7 @@ const routes = [
     title: "Catalogo — Cristalmad",
     afterRender: initCatalogFilters,
   },
+  { path: "/outlet", view: outletView, title: "Outlet — Cristalmad" },
   { path: "/chi-siamo", view: chiSiamoView, title: "Chi Siamo — Cristalmad" },
   { path: "/atelier", view: atelierView, title: "L'Atelier — Cristalmad" },
   {
